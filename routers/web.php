@@ -1,59 +1,73 @@
 <?php
-require_once __DIR__ . './../controllers/AdminController.php';
-require_once __DIR__ . './../helpers/Auth.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Send no-cache headers to prevent back button after logout
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
+require_once __DIR__ . '/../helpers/Auth.php';
+
 $uri = $_GET['page'] ?? 'login';
 
-session_start();
+function protectRoute() {
+    if (!isset($_SESSION['admin'])) {
+        header("Location: index.php?page=login");
+        exit;
+    }
+}
 
-if (!isset($_SESSION) || (isset($_SESSION) && empty($_SESSION))) {
+if (!isset($_SESSION['admin'])) {
+    // User not logged in: only allow login and register pages
     switch ($uri) {
-        case ($uri == 'login'):
-            $admin = new AdminController();
-            $admin->login();
+        case 'login':
+            require_once __DIR__ . '/../controllers/AdminController.php';
+            (new AdminController())->login();
             break;
-        case ($uri == 'register'):
-            require_once __DIR__ . './../controllers/AdminController.php';
+        case 'register':
+            require_once __DIR__ . '/../controllers/AdminController.php';
             (new AdminController())->register();
             break;
         default:
-            require_once __DIR__ . './../controllers/AdminController.php';
-            (new AdminController())->login();
-            break;
+            // Redirect to login page if accessing other pages without login
+            header("Location: index.php?page=login");
+            exit;
     }
-    
 } else {
+    // User logged in: protect all other pages
     switch ($uri) {
-        // case 'login':
-        //     checkSession();
-        //     include 'views/dashboard/index.php'; // or wherever your dashboard view is
-        //     break;
-        // case ($uri == 'register'):
-        //     checkSession();
-        //     require_once __DIR__ . './../controllers/AdminController.php';
-        //     (new AdminController())->register();
-        //     break;
+        case 'login':
+        case 'register':
+            // Redirect logged-in users away from login/register pages
+            header("Location: index.php?page=dashboard");
+            exit;
         case 'dashboard':
-            require 'controllers/DashboardController.php';
+            protectRoute();
+            require_once __DIR__ . '/../controllers/DashboardController.php';
             (new DashboardController())->index();
-            break;               
+            break;
         case 'add-user':
-            require 'controllers/UserController.php';
+            protectRoute();
+            require_once __DIR__ . '/../controllers/UserController.php';
             (new UserController())->addUser();
             break;
         case 'edit-user':
-            require 'controllers/UserController.php';
+            protectRoute();
+            require_once __DIR__ . '/../controllers/UserController.php';
             (new UserController())->editUser();
             break;
         case 'delete-user':
-            require 'controllers/UserController.php';
+            protectRoute();
+            require_once __DIR__ . '/../controllers/UserController.php';
             (new UserController())->deleteUser();
             break;
         case 'logout':
-            require 'logout.php';
+            require_once __DIR__ . '/../logout.php';
             break;
         default:
             echo "404 - Page Not Found!";
+            break;
     }
-    
 }
-

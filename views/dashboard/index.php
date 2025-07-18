@@ -4,10 +4,22 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once 'helpers/Auth.php';
-requireAdmin(); // This will prevent access if not logged in
+print_r($_SESSION);
+if (!isset($_SESSION['admin'])) {
+    header("Location: index.php?page=login");
+    exit;
+}
 
-include 'views/layout/header.php'; ?>
+// No-cache headers to prevent caching after logout/back button
+header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+ // This will prevent access if not logged in
+
+include 'views/layout/header.php'; 
+?>
 
 <div class="container mt-4">
     <h2 class="mb-4">Admin Dashboard</h2>

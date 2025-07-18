@@ -6,21 +6,21 @@ class UserController {
     private $user;
 
     public function __construct() {
-        // Remove session_start if it's already called in index.php
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            session_start(); // Safe start
         }
 
         $this->user = new User();
     }
 
+    // ✅ Call this in protected pages only
     private function protectRoute() {
         if (!isset($_SESSION['admin'])) {
             header("Location: index.php?page=login");
             exit;
         }
 
-        // Prevent browser caching after logout
+        // ✅ Prevent browser caching (back-button issue after logout)
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
@@ -65,4 +65,7 @@ class UserController {
         $this->user->delete($id);
         header("Location: index.php?page=dashboard");
     }
+
+    // 🆕 OPTIONAL: public function to handle logout redirection or show profile, etc.
+    // No session restrictions here unless needed.
 }
