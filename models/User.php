@@ -34,4 +34,9 @@ class User {
         $stmt = $this->conn->prepare("DELETE FROM {$this->table} WHERE id = ?");
         return $stmt->execute([$id]);
     }
+
+    public function getAllUsers() {
+        return $this->getAll();
+    }
+    
 }

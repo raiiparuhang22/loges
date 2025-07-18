@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'./../models/Admin.php';
+require_once __DIR__ . './../controllers/AdminController.php';
 
 class AdminController {
 
@@ -37,18 +38,20 @@ class AdminController {
     
 
     public function register() {
-        session_start();
-
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
         // 🛡 Prevent cached pages after logout
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
-
+    
         if (isset($_SESSION['admin'])) {
             header('Location: index.php?page=dashboard');
             exit;
         }
-
+    
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $admin = new Admin();
             $admin->register($_POST['name'], $_POST['email'], $_POST['password']);
@@ -58,4 +61,5 @@ class AdminController {
             include 'views/auth/register.php';
         }
     }
+    
 }

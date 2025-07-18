@@ -26,4 +26,12 @@ class Admin {
         $stmt = $this->conn->prepare("INSERT INTO admins (name, email, password) VALUES (?, ?, ?)");
         return $stmt->execute([$name, $email, $hash]);
     }
+
+    public function countAll() {
+        $stmt = $this->conn->query("SELECT COUNT(*) FROM admins");
+        return $stmt->fetchColumn();
+    }
+    
+    
+    
 }

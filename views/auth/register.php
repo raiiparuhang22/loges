@@ -1,12 +1,11 @@
-<?php include 'views/layout/header.php'; 
+<?php
+require_once __DIR__ . '/../../helpers/Auth.php'; // optional if you use helpers functions here
 
-require_once __DIR__ . '../../helpers/Auth.php';
-requireAdmin();
+// DO NOT requireAdmin() here! Register page is public
 
+// include __DIR__ . '/../layout/header.php';
 ?>
-
-
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <div class="container mt-5" style="max-width: 400px;">
     <h3 class="mb-4 text-center">Admin Register</h3>
 
@@ -31,4 +30,4 @@ requireAdmin();
     </p>
 </div>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include __DIR__ . '/../layout/footer.php'; ?>

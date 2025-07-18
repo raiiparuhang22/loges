@@ -1,11 +1,11 @@
 <?php 
+// var_dump($count); die(); 
 
-session_start();
-
-if (!isset($_SESSION['admin'])) {
-    header("Location: ../../index.php?page=login");
-    exit;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
+require_once 'helpers/Auth.php';
+requireAdmin(); // This will prevent access if not logged in
 
 include 'views/layout/header.php'; ?>
 

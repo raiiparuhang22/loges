@@ -33,9 +33,9 @@ if (!isset($_SESSION) || (isset($_SESSION) && empty($_SESSION))) {
         //     (new AdminController())->register();
         //     break;
         case 'dashboard':
-            requireAdmin(); // 🔒 This ensures admin is logged in
-            include 'views/dashboard/index.php'; // or wherever your dashboard view is
-            break;        
+            require 'controllers/DashboardController.php';
+            (new DashboardController())->index();
+            break;               
         case 'add-user':
             require 'controllers/UserController.php';
             (new UserController())->addUser();

@@ -1,6 +1,7 @@
 <?php 
-
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['admin'])) {
     header("Location: ../../index.php?page=login");
@@ -8,6 +9,7 @@ if (!isset($_SESSION['admin'])) {
 }
 
 include 'views/layout/header.php'; ?>
+
 
 
 
